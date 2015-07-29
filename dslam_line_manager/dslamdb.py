@@ -5,9 +5,9 @@ import sys
 
 def dslamconnect():
   try:
-    conn = MySQLdb.connect(host = "rpmiptvdb.zg.iskon.hr",
-                          user = "dslam",
-                          passwd = "stats",
+    conn = MySQLdb.connect(host = "mysqldb.net",
+                          user = "user",
+                          passwd = "pw123",
                           db = "dslam")
     cursor = conn.cursor()
     return conn, cursor

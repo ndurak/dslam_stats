@@ -8,9 +8,9 @@ from ConfigParser import ConfigParser
 getcontext().prec=1
 getcontext().rounding=ROUND_FLOOR
 
-conn = MySQLdb.connect (host = "rpmiptvdb.zg.iskon.hr",
-                        user = "dslam",
-                        passwd = "stats",
+conn = MySQLdb.connect (host = "mysqldb.net",
+                        user = "user",
+                        passwd = "pw123",
                         db = "dslam")
 conn.autocommit(True)
 cursor = conn.cursor()

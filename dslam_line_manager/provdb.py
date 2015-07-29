@@ -5,8 +5,8 @@ import sys
 
 def provconnect():
   try:
-    dsn = cx_Oracle.makedsn('oradb-ha.iskon.hr', 1521, 'ha')
-    conn = cx_Oracle.connect('prov_ro', 'provNG2', dsn)
+    dsn = cx_Oracle.makedsn('oradb.net', 1521, 'oradb')
+    conn = cx_Oracle.connect('oradb', 'pw123', dsn)
     cursor = conn.cursor()
     return conn, cursor
   except Exception, e:

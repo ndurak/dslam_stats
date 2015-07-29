@@ -31,15 +31,15 @@ fh.setFormatter(formatter)
 fh.setLevel(logging.DEBUG)
 logger.addHandler(fh)
 cmdGen = cmdgen.CommandGenerator()
-red_srvports = redis.StrictRedis(host='dslam.zg.iskon.hr', port=6379)
-red_events = redis.StrictRedis(host='dslam.zg.iskon.hr', port=6379, db=1)
-red_boards = redis.StrictRedis(host="dslam.zg.iskon.hr", port=6379, db=2)
+red_srvports = redis.StrictRedis(host='redishost.myorg.net', port=6379)
+red_events = redis.StrictRedis(host='redishost.myorg.net', port=6379, db=1)
+red_boards = redis.StrictRedis(host="redishost.myorg.net", port=6379, db=2)
 
 
 
-conn = MySQLdb.connect(host = "rpmiptvdb.zg.iskon.hr",
-                  user = "dslam",
-                  passwd = "stats",
+conn = MySQLdb.connect(host = "mysqldb.net",
+                  user = "user",
+                  passwd = "pw123",
                   db = "dslam")
 conn.autocommit(True)
 cursor = conn.cursor()
@@ -49,7 +49,7 @@ hwadsl2LineStatusLastRetrainInfo = '1.3.6.1.4.1.2011.6.138.1.1.1.1.8'
 vdslBoardTypes = ['H80BVDPM', 'H80AVDPD', 'HS3BVCMM']
 adslBoardTypes = ['H808ADPM', 'H802ADQD']
 ma5600BoardTypes = ['H561ADBF','H565ADBF','H565ADBF2','H565ADBF3']
-community = 'Moo2oaje'
+community = 'public'
 
 dslams = {}
 dslams_inv = {}

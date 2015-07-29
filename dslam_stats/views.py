@@ -9,20 +9,20 @@ import re
 
 def index(request):
     #neki kod
-    dslami = Dslami.objects.exclude(ip='').order_by('ime')
+    dslams = Dslami.objects.exclude(ip='').order_by('name')
     slots = [0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16] 
     ports = range(64)
     days = range(1,32)
     months = range(1,13)
     years = range((date.today() - timedelta(days=60)).year, date.today().year + 1)
     today = date.today()
-    context = {'dslami': dslami, 'slotovi': slots, 'portovi': ports,
+    context = {'dslams': dslams, 'slots': slots, 'ports': ports,
         'days': days, 'months': months, 'years':years, 'today':today}
     return render(request, 'dslam_stats/index.html', context)
 
-def detail(request, searchdate=date.today(), search="dnevno"):
+def detail(request, searchdate=date.today(), search="day"):
     #vidi u model kako dohvatiti statistiku porta
-    dslami = Dslami.objects.exclude(ip='').order_by('ime')
+    dslams = Dslami.objects.exclude(ip='').order_by('name')
     slots = [0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 14, 15, 16] 
     ports = range(64)
     days = range(1,32)
@@ -36,9 +36,9 @@ def detail(request, searchdate=date.today(), search="dnevno"):
     adsl = False
     vdsl = False
     try:
-        day = int(request.GET['dan'])
-        month = int(request.GET['mjesec'])
-        year = int(request.GET['godina'])
+        day = int(request.GET['day'])
+        month = int(request.GET['month'])
+        year = int(request.GET['year'])
         searchdate = date(year, month, day)
     except KeyError: 
         pass
@@ -46,27 +46,27 @@ def detail(request, searchdate=date.today(), search="dnevno"):
         search = request.GET['search']
     except KeyError:
         pass
-    if search == "dnevno":
+    if search == "1 day":
         interval = 1
-    elif search == "dvodnevno":
+    elif search == "2 days":
         interval = 2
-    elif search == "tjedno":
+    elif search == "week":
         interval = 7
-    elif re.search("mjese.no", search):
+    elif re.search("month", search):
         interval = 30
     elif re.search("stb", search):
-        return HttpResponseRedirect("http://dslam.zg.iskon.hr/dslam_stats/?"+request.META['QUERY_STRING'])
+        return HttpResponseRedirect("http://stb.myorg.net/"+request.META['QUERY_STRING'])
     elif search == "lols":
-        return HttpResponseRedirect("http://dslam.zg.iskon.hr/dslam_stats2/lols/detail?"+request.META['QUERY_STRING'])
+        return HttpResponseRedirect("http://dslam_stats.myorg.net/dslam_stats/lols/detail?"+request.META['QUERY_STRING'])
     else:
         interval = 1
     end = searchdate + timedelta(days=1)
     start = searchdate - timedelta(days=interval)
-    query = """select d.dslam_id, d.dslam_type_id, b.type from dslami d left join dslam_boards b on d.dslam_id=b.dslam_id where d.ime='%s' and b.board='0/%s'"""%(dslam, slot)
+    query = """select d.dslam_id, d.dslam_type_id, b.type from dslami d left join dslam_boards b on d.dslam_id=b.dslam_id where d.name='%s' and b.board='0/%s'"""%(dslam, slot)
     cursor.execute(query)
     row = cursor.fetchone()
     if row is None:
-        context = {'dslami': dslami, 'slotovi': slots, 'portovi': ports,
+        context = {'dslams': dslams, 'slots': slots, 'ports': ports,
           'days': days, 'months': months, 'years':years, 'searchdate':searchdate,
           'stats':None, 'dslam':None, 'frame':None, 'slot':None, 'port':None,
           'vdsl': vdsl, 'adsl':adsl}
@@ -175,10 +175,7 @@ def detail(request, searchdate=date.today(), search="dnevno"):
             stat.append(str(rows[i][25] - rows[i+1][25]))
             stat.append(str(rows[i][26] - rows[i+1][26]))
             stats.append(tuple(stat))
-    else:
-        #redirect to dslam_stats
-        return HttpResponseRedirect("http://dslam.zg.iskon.hr/dslam_stats/?"+request.META['QUERY_STRING'])
-    context = {'dslami': dslami, 'slotovi': slots, 'portovi': ports,
+    context = {'dslams': dslams, 'slots': slots, 'ports': ports,
         'days': days, 'months': months, 'years':years, 'searchdate':searchdate,
         'stats':stats, 'dslam':dslam, 'frame':frame, 'slot':slot, 'port':port,
         'vdsl': vdsl, 'adsl':adsl}

@@ -188,15 +188,15 @@ if __name__ == "__main__":
     logfile = logging.basicConfig(filename='/var/log/apps/huawei-traps/handler.log', level=logging.DEBUG, format=FORMAT)
     logger = logging.getLogger("Huawei")
     logger.info("Started")
-    conn = MySQLdb.connect(host = "rpmiptvdb.zg.iskon.hr",
-                      user = "dslam",
-                      passwd = "stats",
+    conn = MySQLdb.connect(host = "mysqldb.net",
+                      user = "user",
+                      passwd = "pw123",
                       db = "dslam")
     conn.autocommit(True)
     cursor = conn.cursor()
-    red = redis.StrictRedis(host='dslam.zg.iskon.hr', port=6379)
+    red = redis.StrictRedis(host='redishost.myorg.net', port=6379)
     redpipe = red.pipeline()
-    red1 = redis.StrictRedis(host='dslam.zg.iskon.hr', port=6379, db=1)
+    red1 = redis.StrictRedis(host='redishost.myorg.net', port=6379, db=1)
     transportDispatcher = AsynsockDispatcher()
     transportDispatcher.registerTransport(
         udp.domainName, udp.UdpSocketTransport().openServerMode(('', 162))

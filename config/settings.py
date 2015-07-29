@@ -14,25 +14,25 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'dslam',                      # Or path to database file if using sqlite3.
         # The following settings are not used with sqlite3:
-        'USER': 'dslam',
-        'PASSWORD': 'stats',
-        'HOST': 'rpmiptvdb.zg.iskon.hr',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'USER': 'user',
+        'PASSWORD': 'pw123',
+        'HOST': 'mysqldb.net',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     },
     'nms': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'nms',  
-        'USER': 'nms',
-        'PASSWORD': 'nms',
-        'HOST': 'nc.zg.iskon.hr',
+        'NAME': 'psdb',  
+        'USER': 'psdb',
+        'PASSWORD': 'pw123',
+        'HOST': 'psycopg.net',
         'PORT': '',
     },
     'oracle': {
         'ENGINE': 'django.db.backends.oracle',
-        'NAME': 'misc',  
-        'USER': 'dslam_stat',
-        'PASSWORD': 'chahFa1h',
-        'HOST': 'oradb-misc.zg.iskon.hr',
+        'NAME': 'oradb',  
+        'USER': 'oradb',
+        'PASSWORD': 'pw123',
+        'HOST': 'oradb.net',
         'PORT': '1521',
     }
 }
@@ -141,8 +141,6 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'dslam_stats',
-    'lols',
-    'hatstats'
 )
 
 # A sample logging configuration. The only tangible logging

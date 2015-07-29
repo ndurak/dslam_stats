@@ -10,7 +10,7 @@ cmdGen = cmdgen.CommandGenerator()
 logger = logging.getLogger('melt')
 
 hwLoopLineTestOprType = ".1.3.6.1.4.1.2011.6.21.1.1.1.2.1.1."
-community = "Moo2oaje"
+community = "public"
 
 def start_melt(params):
     cursor = connection.cursor()
@@ -63,10 +63,10 @@ def start_melt(params):
         return -32602
 
     if 'community' in params:
-        community = 'Moo2oaje'
+        community = 'public'
 
     errorIndication, errorStatus, errorIndex, varBinds = cmdGen.setCmd(
-      cmdgen.CommunityData('my-agent', 'public'),
+      cmdgen.CommunityData('my-agent', community),
       cmdgen.UdpTransportTarget((ip, 161)),
       (hwLoopLineTestOprType + str(ifIndex), rfc1902.Integer(2))
     )
@@ -78,7 +78,7 @@ def start_melt(params):
             logger.warning("No SNMP response from %s"%dslam_name)
             return -32001
         else:
-            logger.error("%s %s: %s"%(dslam_npublic, port_name, errorIndication))
+            logger.error("%s %s: %s"%(dslam_name, port_name, errorIndication))
             return -32000
     else:
         return -32000

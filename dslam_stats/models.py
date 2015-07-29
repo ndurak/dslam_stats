@@ -12,7 +12,7 @@ class DslamType(models.Model):
 
 class Dslami(models.Model):
     dslam_id = models.SmallIntegerField(primary_key=True)
-    ime = models.CharField(max_length=100L, unique=True, blank=True)
+    name = models.CharField(max_length=100L, unique=True, blank=True)
     dslam_type = models.ForeignKey(DslamType)
     ip = models.CharField(max_length=20L, blank=True)
     videoip = models.CharField(max_length=15L, blank=True)

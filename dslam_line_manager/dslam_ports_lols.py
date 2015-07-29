@@ -9,14 +9,14 @@ import redis
 getcontext().prec=1
 getcontext().rounding=ROUND_FLOOR
 
-conn = MySQLdb.connect (host = "rpmiptvdb.zg.iskon.hr",
-                        user = "dslam",
-                        passwd = "stats",
+conn = MySQLdb.connect (host = "mysqldb.net",
+                        user = "user",
+                        passwd = "pw123",
                         db = "dslam")
 conn.autocommit(True)
 cursor = conn.cursor()
 
-red = redis.StrictRedis(host="dslam.zg.iskon.hr",port=6379,db=2)
+red = redis.StrictRedis(host="redishost.myorg.net",port=6379,db=2)
 
 starttime = (datetime.datetime.now() - datetime.timedelta(hours=6)).replace(minute=0, second=0).strftime("%Y-%m-%d %H:%M:%S")
 endtime = datetime.datetime.now().replace(minute=0, second=0).strftime("%Y-%m-%d %H:%M:%S")

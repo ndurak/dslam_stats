@@ -3,7 +3,7 @@
 <tr>
 <td>
 <select name="dslam">
-{% for row in dslami %}
+{% for row in dslams %}
   {% if row.ime == dslam %}
     <option selected label="{{ row.ime }}" value="{{ row.ime }}">{{ row.ime }}</option>
   {% else %}
@@ -20,7 +20,7 @@
 </td>
 <td>
 <select name="slot">
-{% for i in slotovi %}
+{% for i in slots %}
   {% if i == slot %}
     <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
   {% else %}
@@ -31,7 +31,7 @@
 </td>
 <td>
 <select name="port">
-{% for i in portovi %}
+{% for i in ports %}
   {% if i == port %}
     <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
   {% else %}
@@ -83,13 +83,13 @@
 </select>
 </td>
 <td>&nbsp;</td>
-<td><INPUT type="submit" name="search" value="dnevno"></td>
+<td><INPUT type="submit" name="search" value="1 day"></td>
 <td>&nbsp;</td>
-<td><INPUT type="submit" name="search" value="dvodnevno"></td>
+<td><INPUT type="submit" name="search" value="2 days"></td>
 <td>&nbsp;</td>
-<td><INPUT type="submit" name="search" value="tjedno"></td>
+<td><INPUT type="submit" name="search" value="weel"></td>
 <td>&nbsp;</td>
-<td><INPUT type="submit" name="search" value="mjesečno"></td>
+<td><INPUT type="submit" name="search" value="month"></td>
 <td>&nbsp;</td>
 <td><INPUT type="submit" name="search" value="lols"></td>
 <td>&nbsp;</td>
@@ -98,9 +98,9 @@
 <td><INPUT type="submit" name="search" value="stb2"></td>
 <td>&nbsp;</td>
 {% if dslam and slot >= 0 and port >= 0 %}
-  <td><INPUT type="button" value="Selt" onClick="location.href='http://dslam.zg.iskon.hr/selt_manager/?dslam={{ dslam }}&frame={{ frame }}&slot={{ slot }}&port= {{ port }}&radnja=select&list=true'"></td>
+  <td><INPUT type="button" value="Selt" onClick="location.href='http://dslam_stats.myorg.net/selt_manager/?dslam={{ dslam }}&frame={{ frame }}&slot={{ slot }}&port= {{ port }}&radnja=select&list=true'"></td>
 {% else %}
-  <td><INPUT type="button" value="Selt" onClick="location.href='http://dslam.zg.iskon.hr/selt_manager/'"></td>
+  <td><INPUT type="button" value="Selt" onClick="location.href='http://dslam_stats.myorg.net/selt_manager/'"></td>
 {% endif %}
 <td>&nbsp;</td>
 <!--

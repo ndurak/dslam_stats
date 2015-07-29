@@ -15,7 +15,7 @@ loglevel = config.get('Logging', 'loglevel')
 
 conn1, cursor1 = dslamdb.dslamconnect()
 conn2, cursor2 = provdb.provconnect()
-red = redis.StrictRedis(host="dslam.zg.iskon.hr",db=2)
+red = redis.StrictRedis(host="redishost.myorg.net",db=2)
 redpipe = red.pipeline()
 #logging.basicConfig(filename=DLOG,level=logging.DEBUG,format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger("LineManager")
@@ -418,7 +418,7 @@ class Ma5600T(object):
         self.vop_spectrum = {}
         self.vop_spectrum_inv = {}
         self.vop_inp = {}
-        self.vop_inp_inv = {}
+        elf.vop_inp_inv = {}
         self.vop_snr = {}
         self.vop_snr_inv = {}
         # Rate profiles
@@ -615,7 +615,7 @@ class Ma5600T(object):
                     self.logger.debug("%s %s: Increase ds profile"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
                 else:
                     self.logger.debug("%s %s: Low profile, error line. lols=%s, es_ds=%s"%(dslams[dslam_id]['ime'], ports[port_id]['name'], lols, es_ds)) 
-                    status['error']['ds'] = 5    # ne povecavaj zbog error statusa
+                    status['error']['ds'] = 5    # don't increase vecause of errors
             else:
                 if lols < 2 and es_ds < 2:
                     status['result']['profile_ds'] = payed_profile_ds  
@@ -623,7 +623,7 @@ class Ma5600T(object):
                     self.logger.debug("%s %s: Increase ds profile"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
                 else:
                     self.logger.debug("%s %s: Low ds profile, error line. lols=%s, es_ds=%s"%(dslams[dslam_id]['ime'], ports[port_id]['name'], lols, es_ds))
-                    status['error']['ds'] = 5    # ne povecavaj zbog error statusa
+                    status['error']['ds'] = 5    # don't increase because of errors
         # US Profile check
         if current_profile_rate_us > payed_profile_rate_us:
             self.logger.debug("%s %s: To big us profile payed=%s curr_prof_rate=%s",dslams[dslam_id]['ime'], ports[port_id]['name'], payed, current_profile_rate_ds)
@@ -635,17 +635,6 @@ class Ma5600T(object):
                 self.logger.debug("%s %s: Increase us profile", dslams[dslam_id]['ime'], ports[port_id]['name'])
             else:
                 self.logger.debug("%s %s: Low us profile. Lols=%s, es_us=%s", dslams[dslam_id]['ime'], ports[port_id]['name'], lols, es_us)
-        # SNR + INP: djelujemo na ES
-#        if not vdsl:
-            # razlicito tretiramo adsl i vdsl korisnike
-#            if iptv and es_ds > 1:
-#                if inp_ds < 2:
-#                    if current_vop_inp[] == "INP 2":
-#                        inp_delay = "16/8"
-#                elif inp_ds < 4:
-#                    inp = 4
-#                elif inp_ds < 8:
-#                    inp = 8 
         target_snr = "8/8"
         if current_vop_snr[:3] == "8/8" and lols <= 1 and es_ds < 2:
             self.logger.debug("%s %s: Put target SNR 6/6 lols=%s es_ds=%s", dslams[dslam_id]['ime'], ports[port_id]['name'], lols, es_ds)
@@ -657,7 +646,7 @@ class Ma5600T(object):
             elif es_ds > 2:
                 self.logger.debug("%s %s: Increase target SNR, es_ds=%s",dslams[dslam_id]['ime'], ports[port_id]['name'],es_ds)
                 target_snr = "8/8"
-        # drugo odredimo max marginu
+        # max margin
         max_snr = "31/31"
         if current_vop_snr[-5:] == "31/31":
             if payed_profile_rate_ds < 6144 and not iptv and lols < 2 and es_ds < 2:
@@ -682,11 +671,9 @@ class Ma5600T(object):
         # Spectrum
         current_vop_spectrum_id = self.vop_spectrum_inv[current_vop_spectrum]['id']
         if vdsl and alluserstats[dslamportkey]['modulation'] != 5:
-            # posalji to u event handler??
             self.logger.info("%s %s: VDSL not active"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
         elif vdsl and current_vop_spectrum != 'ADSL':
-            # nemamo neko pravilo za 17a ili 8b profile zasada
-            # zelimo postaviti annex M, i zato radimo ovaj hack dolje (na parnim indeksima su annex b, na neparnim annex m)
+            # Put annex M rather than B. B has odd index, M even
             if current_vop_spectrum_id % 2 == 0:
                 status['result']['vop_spectrum_id'] = current_vop_spectrum_id + 1
                 status['result']['vop_spectrum'] = self.vop_spectrum[current_vop_spectrum_id + 1]
@@ -696,7 +683,6 @@ class Ma5600T(object):
             status['result']['vop_spectrum_id'] = 301
             status['result']['vop_spectrum'] = self.vop_spectrum[301]
 
-#        if payed['traffic_ds'] != getTrafficData(dslam_id, port_id, vlan=86, vpi=0, vci=86)
         return status
 
 
@@ -835,17 +821,9 @@ class Ma5600(object):
         current_rate_us = alluserstats[dslamportkey]['rate_us']
         inp_ds = alluserstats[dslamportkey]['inp_ds']
         inp_us = alluserstats[dslamportkey]['inp_us']
-#        try:
-#            current_profile_rate_ds = self.profiles[payed_profile_id]['rate_ds']
-#            current_profile_rate_us = self.profiles[payed_profile_id]['rate_us']
-#        except KeyError:
-#            logger.info("Unknown profile on %s %s"%(dslams[dslam_id]['ime'], adslports[port_id]['name']))
-#            status['result']['new_profile_id'] = payed_profile_id
-#            return status
 
         # Profile check
         if current_profile_id >= 990:
-            # ove necu dirati
             return None
 
         if current_profile_id not in self.profiles:
@@ -866,29 +844,17 @@ class Ma5600(object):
                 if es_ds == 0 and lols == 0:
                     status['result']['profile_ds'] = payed_profile_ds
                     self.logger.debug("%s %s: Increase ds profile"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
-#                elif es_ds < 2 and lols < 2:
-#                    status['result']['new_profile_id'] = payed_profile_id % 100 + current_profile_id / 100 * 100 
-#                    logger.debug("!Increase profile on %s %s"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
-#                elif es_ds == 1 and lols == 0:
-#                    status['result']['new_profile_id'] = payed_profile_id % 100 + current_profile_id / 100 * 100 
-#                    logger.debug("Increase profile on %s %s"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
-#                elif es_ds == 0 and lols == 1:
-#                    status['result']['new_profile_id'] = payed_profile_id % 100 + current_profile_id / 100 * 100
-#                    logger.debug("Increase profile on %s %s"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
                 else:
                     self.logger.debug("%s %s: Low profile, error line"%(dslams[dslam_id]['ime'], ports[port_id]['name'])) 
-                    status['error']['ds'] = 5    # ne povecavaj zbog error statusa
+                    status['error']['ds'] = 5    # don't increase because of errors
             else:
                 if lols < 2 and es_ds < 2:
                     if payed_profile_id != 661:
                         status['result']['profile_ds'] = payed_profile_ds  
                         self.logger.debug("%s %s: Increase ds profile"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
-#                elif lols < 2 and es_ds < 3 and es_us < 3:
-#                    status['result']['new_profile_id'] = payed_profile_id % 100 + current_profile_id / 100 * 100 
-#                    logger.debug("!Increase profile on %s %s"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
                 else:
                     self.logger.debug("%s %s: Low profile, error line"%(dslams[dslam_id]['ime'], ports[port_id]['name']))
-                    status['error']['ds'] = 5    # ne povecavaj zbog error statusa
+                    status['error']['ds'] = 5    # don't increase because of errors
         elif es_ds == 0:
             if current_ext_id > 0:
                 self.logger.debug("%s %s: Remove extended_id",dslams[dslam_id]['ime'], ports[port_id]['name'])
@@ -916,7 +882,7 @@ class Ma5600(object):
                 profile_us = str(profile_us)
             else:
                 self.logger.debug("%s %s: Low us profile, error line. lols=%s, es_us=%s"%(dslams[dslam_id]['ime'], ports[port_id]['name'], lols, es_us)) 
-                status['error']['us'] = 5    # ne povecavaj zbog error statusa
+                status['error']['us'] = 5    # don't increase because of errors
                 profile_us = current_profile_rate_us
                 if profile_us > 1024:
                     self.logger.error("%s %s: Invalid profile_us name %s"%(dslams[dslam_id]['ime'],ports[port_id]['name'],profile_us))
@@ -929,22 +895,6 @@ class Ma5600(object):
             else:
                 profile_us = str(profile_us)
         status['result']['profile_us'] = profile_us
-
-
-        # if we are in next if, it could mean 
-        # a) we decrease line ds line rate so we don't care about errors 
-        # b) we increase line ds rate, but there are no errors
-        # if errors in upstream, upstream rate is not increased
-#        if 'profile_ds' in status['result']:
-#            if payed_profile_rate_ds <= 6000 and not iptv:
-#                profile_name = "%s/%s 9/9(12/12) I R"%(payed_profile_ds, payed_profile_rate_us)
-#                status['result']['new_profile_id'] = self.profiles_inv[profile_name]['id']
-#            else:
-#                profile_name = "%s/%s %s INTER S"%(status['result']['profile_ds'],profile_us,"9/9")
-#                new_profile_id = self.profiles_inv[profile_name]['id']
-#                status['result']['new_profile_id'] = (new_profile_id % 100) + current_profile_id - current_profile_id%100 
-#            logger.debug("%s %s: new profile %s", dslams[dslam_id]['ime'], ports[port_id]['name'], profile_name)
-#            return status
 
 
         # Ds error checks. 
@@ -967,7 +917,6 @@ class Ma5600(object):
                         status['error']['ds'] = 1
                     else:
                         self.logger.debug("%s %s: Put I+",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                        status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                         status['result']['interleaved'] = 1
                 elif getBoardType(dslam_id,port_id) == 'H561ADBF':
                     # centilium board, it's not functioning
@@ -976,7 +925,6 @@ class Ma5600(object):
                         status['error']['ds'] = 3
                     else:
                         self.logger.debug("%s %s: Put I+, centilium",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                        status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                         status['result']['interleaved'] = 1
                 else:
                     if payed_profile_rate_ds < attainable_rate_ds:
@@ -985,7 +933,6 @@ class Ma5600(object):
                     elif min_profile_rate_ds < current_rate_ds:
                         if current_profile_id < 400 or current_profile_id >= 500:
                             self.logger.debug("%s %s: Put I+",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                            status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                             status['result']['interleaved'] = 1
                         elif inp_ds < 2:
                             self.logger.debug("%s %s: Extended=1",dslams[dslam_id]['ime'], ports[port_id]['name'])
@@ -1015,7 +962,6 @@ class Ma5600(object):
                         status['error']['ds'] = 1
                     else:
                         self.logger.debug("%s %s: Put I+",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                        status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                         status['result']['interleaved'] = 1
                 elif getBoardType(dslam_id,port_id) == 'H561ADBF':
                     # centilium board, can't apply INP on centilium board
@@ -1024,17 +970,15 @@ class Ma5600(object):
                         status['error']['ds'] = 3
                     else:
                         self.logger.debug("%s %s: Put I+, centilium",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                        status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                         status['result']['interleaved'] = 1
                 else:
                     if current_profile_rate_ds < attainable_rate_ds*9/10 or payed_profile_rate_ds < current_rate_ds:
                         if inp_ds > 4:
                             if current_profile_id < 400 or current_profile_id >= 500:
                                 self.logger.debug("%s %s: Put I+",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                                status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                                 status['result']['interleaved'] = 1
                             else:
-                                status['error']['ds'] = 4    # max zastitni profil je vec stavljen
+                                status['error']['ds'] = 4    # max proteciotn already applied
                         elif alluserstats[dslamportkey]['inp_ds'] > 2:
                             self.logger.debug("%s %s: Extended=2",dslams[dslam_id]['ime'], ports[port_id]['name'])
                             status['result']['new_extended_id'] = 2
@@ -1060,7 +1004,6 @@ class Ma5600(object):
                         status['error']['ds'] = 1
                     else:
                         self.logger.debug("%s %s: Put I+",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                        status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                         status['result']['interleaved'] = 1
                 elif getBoardType(dslam_id,port_id) == 'H561ADBF':
                     # centilium board, can't apply INP on centilium board
@@ -1069,25 +1012,21 @@ class Ma5600(object):
                         status['error']['ds'] = 3
                     else:
                         self.logger.debug("%s %s: Put I+, centilium",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                        status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                         status['result']['interleaved'] = 1
                 else:
                     if 600 <= current_profile_id <= 700 and current_profile_id != 661:
                         self.logger.debug("%s %s: 12/12 profile",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                        status['result']['new_profile_id'] = (payed_profile_id % 100) + 400
                         status['result']['interleaved'] = 1
                     if current_profile_rate_ds > attainable_rate_ds or payed_profile_rate_ds < current_rate_ds:
                         self.logger.debug("%s %s: Extended=2",dslams[dslam_id]['ime'], ports[port_id]['name'])
                         status['result']['new_extended_id'] = 2
                     else:
-                        # ds_rate to low, can't put inp
                         self.logger.debug("%s %s: ds rate to low, can't do much",dslams[dslam_id]['ime'], ports[port_id]['name'])
                         status['error']['ds'] = 2
 
         if es_us == 4 and status['result'] == {}:
             if current_profile_id < 400 or current_profile_id >= 500:
                 self.logger.debug("%s %s: Put I+",dslams[dslam_id]['ime'], ports[port_id]['name'])
-#                status['result']['new_profile_id'] = (current_profile_id % 100) + 400
                 status['result']['interleaved'] = 1
                 status['change'] = 1
             else:
@@ -1096,9 +1035,6 @@ class Ma5600(object):
 
         return status
 
-#####################################################
-# tu sad pronalazimo profil iz naziva za ds i us
-####################################################
         if 'profile_us' in status['result'].keys():
             profile_us = status['result']['profile_us']
             profile_us = re.sub("(M|K)", '', profile_us)
@@ -1136,11 +1072,9 @@ class Ma5600(object):
         profile_name = "%s/%s %s INTER S"%(profile_ds,profile_us,"9/9")
         proposed_profile_id = self.profiles_inv[profile_name]['id']
         if 'new_profile_id' in status['result']:
-            # posalji dslam_id, port_id, new_profile_id, extended_id
             status['result']['new_profile_id'] = (status['result']['new_profile_id'] % 100) + current_profile_id - current_profile_id%100 
             self.logger.info("%s %s: Change profile %s",dslams[dslam_id]['ime'], ports[port_id]['name'],status['result'])
         else:
-            #izracunaj new_profile_id i posalji uz dslam_id, port_id i extended_id (ako postoji)
             status['result']['new_profile_id'] = (proposed_profile_id % 100) + current_profile_id - current_profile_id%100 
             self.logger.info("%s %s: Change profile %s",dslams[dslam_id]['ime'], ports[port_id]['name'],status['result'])
 
@@ -1175,7 +1109,6 @@ if __name__ == '__main__':
         if dslams[dslam_id]['dslam_type_id'] == 1:
             status = ma5600.run(dslamportkey)
             if status is None:
-                # ne treba nista raditi s tim portom
                 continue
             elif 'result' in status:
                 # line profile results
@@ -1187,7 +1120,6 @@ if __name__ == '__main__':
                     extended_id = status['result']['new_extended_id']
                     profile['extended_profile'] = ma5600.ext_profiles[extended_id]['name']
                 if 'change' in status:
-#                    red.hset('set:profile:%s'%dslams[dslam_id]['ip'],ports[port_id]['name'], json.dumps(profile))
                     redpipe.hset('set:profile:%s'%dslams[dslam_id]['ip'],ports[port_id]['name'], json.dumps(profile))
                     redpipe.expire('set:profile:%s'%dslams[dslam_id]['ip'], 86400)
 
@@ -1202,9 +1134,6 @@ if __name__ == '__main__':
                 if 'profile_ds' in status['result']:
                     vop['ds_rate'] = status['result']['profile_ds_id']
                 if vop.keys():
-#                    red.hset("set:profile:%s"%dslams[dslam_id]['ip'],ports[port_id]['name'], json.dumps(vop))
                     redpipe.hset("set:profile:%s"%dslams[dslam_id]['ip'],ports[port_id]['name'], json.dumps(vop))
                     redpipe.expire("set:profile:%s"%dslams[dslam_id]['ip'], 86400)
     redpipe.execute()
-#        elif dslams[dslam_id]['dslam_type_id'] in (2,3,4):
-#            Ma5600T.run(dslamportkey)
