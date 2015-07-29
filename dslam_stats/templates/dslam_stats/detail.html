@@ -1,0 +1,128 @@
+<HTML>
+<HEAD>
+<TITLE>DSLAM Statistika</TITLE>
+  <style>
+   * { font-family:Tahoma, Verdana, Arial; font-size: 12px; }
+   TD.d { border: 1px solid silver; }
+   INPUT.gumb { background: silver; }
+   TD.blue {color: #5A5A5A; background-color: #BBCEFE; }
+   TD.aa {color: #5A5A5A; background-color:#E9E9E9; }
+  </style>
+</HEAD>
+<BODY>
+<br>
+{% include "dslam_stats/form.html" %}
+<table x:str border="1" cellpadding="1" cellspacing="1" width="827" style="border-collapse:
+ collapse;width:800pt" id="dslam_statistika">
+  <tr height="17" style="height:12.75pt" bgcolor="#000000">
+    <td rowspan="2" height="34" style="color: #ffffff;" width="151" style="height: 25.5pt; width: 113pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: middle; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Time interval</td>
+    <td nowrap colspan="5" width="250" style="color: #ffffff;" style="width: 130pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: middle; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Line profile</td>
+    {% if vdsl %}
+    <td rowspan="2" width="21" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Modulation</td>
+    {% endif %}
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    INP</td>
+    {% if vdsl %}
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Retransmission</td>
+    {% elif adsl %}
+    <td colspan="1" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Retransmission</td>
+    {% endif %}
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Attenuation</td>
+    {% if vdsl %}
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    KL0</td>
+    {% endif %}
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    SNR</td>
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Transmit power</td>
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Max attain rate</td>
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Act data rate</td>
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Actual delay</td>
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    ES</td>
+    <td colspan="2" width="90" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    SES</td>
+    <td rowspan="2" width="21" style="color: #ffffff;" wstyle="width: 68pt; color: windowtext; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Inits</td>
+  </tr>
+
+  <tr height="17" style="height:12.75pt" bgcolor="#000000">
+    <td width="75" class="head-profile td-profile" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Spectrum</td>
+    <td width="75" class="head-profile td-profile" style="color: #ffffff;  font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Rate down</td>
+    <td width="75" class="head-profile td-profile" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    Rate up</td>
+    <td width="75" class="head-profile td-profile" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    INP</td>
+    <td width="75" class="head-profile td-profile" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    SNR</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff;" font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    {% if vdsl %}
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    {% endif %}
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    {% if vdsl %}
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    {% endif %}
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    down</td>
+    <td width="45" class="head-val td-val" style="color: #ffffff; font-size: 10.0pt; font-weight: 400; font-style: normal; text-decoration: none; font-family: Arial; text-align: general; vertical-align: bottom; white-space: nowrap; border: medium none; padding-left: 1px; padding-right: 1px; padding-top: 1px" align="center">
+    up</td>
+  </tr>
+  {% for stat in stats %}
+  <tr>
+    {% for val in stat %}
+      <td>{{ val }}</td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+
+</table>
+</BODY>

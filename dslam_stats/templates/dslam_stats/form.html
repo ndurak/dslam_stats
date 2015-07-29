@@ -1,0 +1,120 @@
+<form action="{% url 'detail' %}" method="GET">
+<TABLE border = "1">
+<tr>
+<td>
+<select name="dslam">
+{% for row in dslami %}
+  {% if row.ime == dslam %}
+    <option selected label="{{ row.ime }}" value="{{ row.ime }}">{{ row.ime }}</option>
+  {% else %}
+    <option label="{{ row.ime }}" value="{{ row.ime }}">{{ row.ime }}</option>
+  {% endif %}
+{% endfor %}
+</select>
+</td>
+<td></td>
+<td>
+<select name="frame">
+<option label="0" value="0">0</option>
+</select>
+</td>
+<td>
+<select name="slot">
+{% for i in slotovi %}
+  {% if i == slot %}
+    <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% else %}
+    <option label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% endif %}
+{% endfor %}
+</select>
+</td>
+<td>
+<select name="port">
+{% for i in portovi %}
+  {% if i == port %}
+    <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% else %}
+    <option label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% endif %}
+{% endfor %}
+</select>
+</td>
+
+<td>&nbsp;</td>
+<td>
+<select name="dan">
+{% for i in days %}
+  {% if i == searchdate.day %}
+    <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% elif i == today.day %}
+    <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% else %}
+    <option label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% endif %}
+{% endfor %}
+</select>
+
+</td>
+<td>
+<select name="mjesec">
+{% for i in months %}
+  {% if i == searchdate.month %}
+    <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% elif i == today.month %}
+    <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% else %}
+    <option label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% endif %}
+{% endfor %}
+</select>
+</td>
+<td>
+<select name="godina">
+{% for i in years %}
+  {% if i == searchdate.year %}
+    <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% elif i == today.year %}
+    <option selected label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% else %}
+    <option label="{{ i }}" value="{{ i }}">{{ i }}</option>
+  {% endif %}
+{% endfor %}
+</select>
+</td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="dnevno"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="dvodnevno"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="tjedno"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="mjesečno"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="lols"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="stb"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="stb2"></td>
+<td>&nbsp;</td>
+{% if dslam and slot >= 0 and port >= 0 %}
+  <td><INPUT type="button" value="Selt" onClick="location.href='http://dslam.zg.iskon.hr/selt_manager/?dslam={{ dslam }}&frame={{ frame }}&slot={{ slot }}&port= {{ port }}&radnja=select&list=true'"></td>
+{% else %}
+  <td><INPUT type="button" value="Selt" onClick="location.href='http://dslam.zg.iskon.hr/selt_manager/'"></td>
+{% endif %}
+<td>&nbsp;</td>
+<!--
+<td><INPUT type="submit" name="search" value="graf"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="lols"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="stb"></td>
+<td>&nbsp;</td>
+<td><INPUT type="submit" name="search" value="stb2"></td>
+<td>&nbsp;</td>
+<input type="hidden" value="true" name="list">
+-->
+</tr>
+</table>
+</form>
+
