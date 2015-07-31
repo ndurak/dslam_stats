@@ -1,0 +1,11 @@
+Description: module that executes actions on dsl line event. There are two 
+major dsl line events. Loss of line event (activating -> activated) and 
+line inititalizaton event (activating -> activated). Dsl line event 
+notifications can be found in redis data store. Actions taken on:
+Loss of line:
+  - get last retrain info
+  - profile change (if needed)  
+
+Line initialization:
+  - get inventory
+

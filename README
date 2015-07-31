@@ -1,0 +1,7 @@
+Description
+Collection of applications and modules for managing dslams. 
+ - dslam stats - web frontend for displaying dslam port xdsl paramters
+ - trap-handler - collects snmp traps and sends them to further processing
+ - melt - json rpc api for starting MELT test on line
+ - dslam line manager - manages all dsl lines in local loop
+ - event handler - performs actions upon dsl line events

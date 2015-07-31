@@ -1,0 +1,7 @@
+Description
+Some dslam boards can perform Metallic Line Test (MELT). This application can,
+upon receving request through JSON RPC interface, start the MELT test by
+sending SNMP request to dslam. Dslam will then perform melt line testing on 
+port, and send results in SNMP trap. Another application, trap-handler, will 
+receive snmp request and save results in the redis cache, ready for further 
+processing.

@@ -1,0 +1,30 @@
+Description: 
+------------------------------------------------------------------------------
+Monitors dsl lines and it's parameters, categorizes them, chooses
+appropriate action if needed (profile(s) change, line reset ..) and schedules
+actions.
+
+Modules
+------------------------------------------------------------------------------
+Dslam ports err: script that should be scheduled in cron for every six hours,
+evaluates dsl line errors parameters, and puts each line in one of the 
+category. Categories: green (no errors), yellow (few errors, could be 
+annulated with error correction system), orange (there are some errors which
+could impact QoE, red (serious impact on QoE) and black (this is hardly
+working).
+
+Dslam ports lols: should be scheduled for every six hours, evaluated loss of 
+line events and categorizes each line. Categories: green, yellow, orange, red,
+black. Have the same meaning as for previous module.
+
+Dslam port status: As each line was given a category for six hour intervals,
+this script evaluates 6 hour intervals for errors and lols in the past 7 days,
+and makes decision based on these intervals. Decision could be, similar as
+above, green, yellow, orange, red, black.
+
+Dsl line manager: module that takes into account current dsl line parameters,
+evaluated statuses from above, and services that user pays and makes decision
+about actions that should be taken on dsl line. Goal is to apply protection 
+mechanism for errored ports (especially iptv ports), to decrease output power 
+and increase maximum attainable rate where possible. 
+
