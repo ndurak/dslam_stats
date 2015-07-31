@@ -1,0 +1,3 @@
+Description
+Listens for snmp traps, extracts ones events and sends them for further
+processing in redis data store.
